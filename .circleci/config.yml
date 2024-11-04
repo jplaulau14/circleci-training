@@ -16,6 +16,7 @@ jobs:
               exit 0
             fi
       - node/install-packages:
+          app-dir: hello-world-frontend
           pkg-manager: npm
       - run:
           name: Build Frontend
@@ -39,6 +40,7 @@ jobs:
               exit 0
             fi
       - node/install-packages:
+          app-dir: hello-world-backend
           pkg-manager: npm
       - run:
           name: Run Tests
