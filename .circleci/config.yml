@@ -10,37 +10,17 @@ jobs:
       - checkout:
           path: ~/project
       - run:
-          name: Check for frontend changes
-          command: |
-            # Fetch the last commit
-            git fetch origin main
-            # Compare changes between last commit and current
-            if git diff --quiet origin/main...HEAD -- .; then
-              echo "No changes in frontend. Skipping build and deploy."
-              echo "SKIP_DEPLOY=1" >> $BASH_ENV
-            else
-              echo "Changes detected in frontend"
-            fi
-      - run:
           name: Install Frontend Dependencies
           command: npm install
       - run:
           name: Build Frontend
-          command: |
-            if [ "${SKIP_DEPLOY}" != "1" ]; then
-              npm run build
-            fi
+          command: npm run build
       - run:
           name: Install Vercel Locally
           command: npm install vercel --save-dev
       - run:
           name: Deploy to Vercel
-          command: |
-            if [ "${SKIP_DEPLOY}" != "1" ]; then
-              npx vercel deploy --prod --token $VERCEL_TOKEN
-            else
-              echo "Skipping deployment to Vercel."
-            fi
+          command: npx vercel deploy --prod --token $VERCEL_TOKEN
 
   build-backend:
     machine: true
@@ -49,45 +29,21 @@ jobs:
       - checkout:
           path: ~/project
       - run:
-          name: Check for backend changes
-          command: |
-            # Fetch the last commit
-            git fetch origin main
-            # Compare changes between last commit and current
-            if git diff --quiet origin/main...HEAD -- .; then
-              echo "No changes in backend. Skipping build and deploy."
-              echo "SKIP_DEPLOY=1" >> $BASH_ENV
-            else
-              echo "Changes detected in backend"
-            fi
-      - run:
           name: Install Backend Dependencies
           command: npm install
       - run:
           name: Run Tests
-          command: |
-            if [ "${SKIP_DEPLOY}" != "1" ]; then
-              npm test
-            else
-              echo "Skipping tests as no backend changes detected."
-            fi
+          command: npm test
       - run:
           name: Build Docker Image
-          command: |
-            if [ "${SKIP_DEPLOY}" != "1" ]; then
-              docker build -t hello-world-backend .
-            fi
+          command: docker build -t hello-world-backend .
       - run:
           name: Deploy to Render
           command: |
-            if [ "${SKIP_DEPLOY}" != "1" ]; then
-              curl -X POST \
-              -H 'Accept: application/json' \
-              -H "Authorization: Bearer $RENDER_API_KEY" \
-              'https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys'
-            else
-              echo "Skipping deployment to Render."
-            fi
+            curl -X POST \
+            -H 'Accept: application/json' \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            'https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys'
 
 workflows:
   build-and-deploy:
