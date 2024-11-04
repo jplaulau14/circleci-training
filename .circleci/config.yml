@@ -12,9 +12,14 @@ jobs:
       - run:
           name: Check for frontend changes
           command: |
-            if git diff --quiet HEAD^ HEAD -- hello-world-frontend/; then
+            # Fetch the last commit
+            git fetch origin main
+            # Compare changes between last commit and current
+            if git diff --quiet origin/main...HEAD -- .; then
               echo "No changes in frontend. Skipping build and deploy."
               echo "SKIP_DEPLOY=1" >> $BASH_ENV
+            else
+              echo "Changes detected in frontend"
             fi
       - run:
           name: Install Frontend Dependencies
@@ -46,9 +51,14 @@ jobs:
       - run:
           name: Check for backend changes
           command: |
-            if git diff --quiet HEAD^ HEAD -- hello-world-backend/; then
+            # Fetch the last commit
+            git fetch origin main
+            # Compare changes between last commit and current
+            if git diff --quiet origin/main...HEAD -- .; then
               echo "No changes in backend. Skipping build and deploy."
               echo "SKIP_DEPLOY=1" >> $BASH_ENV
+            else
+              echo "Changes detected in backend"
             fi
       - run:
           name: Install Backend Dependencies
