@@ -7,7 +7,8 @@ jobs:
     executor: node/default
     working_directory: ~/project/hello-world-frontend
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
       - run:
           name: Check for frontend changes
           command: |
@@ -15,9 +16,9 @@ jobs:
               echo "No changes in frontend. Skipping build and deploy."
               exit 0
             fi
-      - node/install-packages:
-          app-dir: hello-world-frontend
-          pkg-manager: npm
+      - run:
+          name: Install Frontend Dependencies
+          command: npm install
       - run:
           name: Build Frontend
           command: npm run build
@@ -31,7 +32,8 @@ jobs:
     executor: node/default
     working_directory: ~/project/hello-world-backend
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
       - run:
           name: Check for backend changes
           command: |
@@ -39,9 +41,9 @@ jobs:
               echo "No changes in backend. Skipping build and deploy."
               exit 0
             fi
-      - node/install-packages:
-          app-dir: hello-world-backend
-          pkg-manager: npm
+      - run:
+          name: Install Backend Dependencies
+          command: npm install
       - run:
           name: Run Tests
           command: npm test
