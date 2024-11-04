@@ -26,4 +26,11 @@ describe('API Endpoint Testing', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.text).toBe(`Hello ${name} from Express.js!`);
   });
+
+  it('POST /hello - should return personalized greeting', async () => {
+    const name = 'John';
+    const res = await request(app).post('/hello').send({ name });
+    expect(res.statusCode).toEqual(200);
+    expect(res.text).toBe(`Hello ${name} from Express.js!`);
+  });
 });

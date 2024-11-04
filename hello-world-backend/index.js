@@ -18,6 +18,10 @@ app.get('/hello/:name', (req, res) => {
   res.send(`Hello ${req.params.name} from Express.js!`);
 });
 
+app.post('/hello', (req, res) => {
+  res.send(`Hello ${req.body.name} from Express.js!`);
+});
+
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
