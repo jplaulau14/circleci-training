@@ -5,7 +5,7 @@ describe('API Endpoint Testing', () => {
   it('GET / - should return Hello World from Express.js!', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toEqual(200);
-    expect(res.text).toBe('Hello World from Express.js!');
+    expect(res.text).toBe('Hello World!!!');
   });
 
   it('GET /health - should return OK', async () => {
