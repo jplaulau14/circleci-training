@@ -1,4 +1,3 @@
-# .circleci/config.yml
 version: 2.1
 orbs:
   node: circleci/node@5
@@ -9,6 +8,13 @@ jobs:
     working_directory: ~/project/hello-world-frontend
     steps:
       - checkout
+      - run:
+          name: Check for frontend changes
+          command: |
+            if git diff --quiet HEAD^ HEAD -- hello-world-frontend/; then
+              echo "No changes in frontend. Skipping build and deploy."
+              exit 0
+            fi
       - node/install-packages:
           pkg-manager: npm
       - run:
@@ -21,18 +27,19 @@ jobs:
             vercel deploy --prod --token $VERCEL_TOKEN
 
   build-backend:
-    docker:
-      - image: docker:20.10.16
+    executor: node/default
+    working_directory: ~/project/hello-world-backend
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
-          name: Install Node.js
-          command: apk add --update nodejs npm
-      - run:
-          name: Install Dependencies
-          command: npm install
+          name: Check for backend changes
+          command: |
+            if git diff --quiet HEAD^ HEAD -- hello-world-backend/; then
+              echo "No changes in backend. Skipping build and deploy."
+              exit 0
+            fi
+      - node/install-packages:
+          pkg-manager: npm
       - run:
           name: Run Tests
           command: npm test
