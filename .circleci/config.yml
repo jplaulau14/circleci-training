@@ -3,25 +3,6 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  build-frontend:
-    executor: node/default
-    working_directory: ~/project/hello-world-frontend
-    steps:
-      - checkout:
-          path: ~/project
-      - run:
-          name: Install Frontend Dependencies
-          command: npm install
-      - run:
-          name: Build Frontend
-          command: npm run build
-      - run:
-          name: Install Vercel Locally
-          command: npm install vercel --save-dev
-      - run:
-          name: Deploy to Vercel
-          command: npx vercel deploy --prod --token $VERCEL_TOKEN
-
   build-backend:
     machine: true
     working_directory: ~/project/hello-world-backend
@@ -45,10 +26,6 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - build-frontend:
-          filters:
-            branches:
-              only: main
       - build-backend:
           filters:
             branches:
